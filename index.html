@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Rive (JS) Quick Start</title>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="/style.css">
+        <style>
+          body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+          }
+          /* Center the loading text */
+          #loading-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            z-index: 2;
+          }
+          /* Canvas covers full screen */
+          #rive-canvas {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background-color: black;
+            z-index: 1;
+          }
+        </style>
+      </head>
+
+      <body>
+        <!-- This text will show behind the canvas -->
+        <div id="loading-text">Loading...</div>
+        <canvas id="rive-canvas"></canvas>
+    
+        <script type="module" src="/src/game.ts"></script>
+        <script type="module" src="/src/openplay-connect/openplay-connect-listener.ts"></script>
+        <script type="module" src="/src/components/internal-event-listener.ts"></script>
+      </body>
+</html>
