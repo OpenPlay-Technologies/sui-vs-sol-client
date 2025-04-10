@@ -15,7 +15,6 @@ window.addEventListener('message', (event: MessageEvent) => {
     const payload = event.data;
 
     if (!isInternalEvent(payload)) {
-        console.log("Invalid event payload");
         return
     }
 
@@ -34,8 +33,8 @@ window.addEventListener('message', (event: MessageEvent) => {
 
         console.log("Init data ready");
 
-        var fetchGamePromise;
-        var balanceManagerDataPromise;
+        let fetchGamePromise;
+        let balanceManagerDataPromise;
 
         if (import.meta.env.VITE_DUMMY_BACKEND == 'true') {
             fetchGamePromise = mockFetchGame();
@@ -121,8 +120,8 @@ window.addEventListener('message', (event: MessageEvent) => {
         });
 
         // Reset the game
-        var fetchGamePromise;
-        var balanceManagerDataPromise;
+        let fetchGamePromise;
+        let balanceManagerDataPromise;
 
         if (import.meta.env.VITE_DUMMY_BACKEND == 'true') {
             fetchGamePromise = mockFetchGame();

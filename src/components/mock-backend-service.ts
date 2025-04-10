@@ -49,14 +49,19 @@ export default class MockBackendService implements IBackendService {
 
         const randomNumber = Math.floor(Math.random() * 10000);
 
-        var result = "";
-        var winAmount = 0;
+        let result = "";
+        let winAmount = 0;
 
         if (randomNumber < gameData.house_edge_bps) {
             result = HOUSE_BIAS
         }
         else {
-            randomNumber % 2 == 0 ? result = HEAD : result = TAIL;
+            if (randomNumber % 2 == 0) {
+                result = HEAD
+            }
+            else {
+                result = TAIL;
+            }
             if (result === prediction) {
                 winAmount = stake / 10000 * Number(gameData.payout_factor_bps);
             }
@@ -68,7 +73,7 @@ export default class MockBackendService implements IBackendService {
             return;
         }
 
-        var event: InteractedWithGameModel = {
+        const event: InteractedWithGameModel = {
             old_balance: BigInt(currentBalance),
             new_balance: BigInt(currentBalance) + BigInt(winAmount) - BigInt(stake),
             context: {

@@ -1,6 +1,6 @@
 import { Transaction } from "@mysten/sui/transactions";
 
-import { signAndExecuteTransaction } from "../openplay-connect/functions";
+import { signAndExecuteTransaction } from "../openplay-connect/game-functions";
 import { InteractedWithGameModel } from "../sui/models/openplay-coin-flip";
 import { GlobalStorage } from "./global-storage";
 import { INTERACT_EVENT_TYPE, INTERACT_FUNCTION_TARGET } from "../sui/constants/coin-flip-constants";
@@ -76,7 +76,7 @@ export default class BackendService implements IBackendService {
     }
 }
 
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseInteractedWithGameModel(raw: any): InteractedWithGameModel {
     return {
         old_balance: BigInt(raw.old_balance),

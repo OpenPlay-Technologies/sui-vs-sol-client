@@ -118,6 +118,7 @@ async function handleSignRequest(targetWindow: Window, data: Message) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function verifyTxData(_transaction: Transaction): boolean {
   return true;
 }

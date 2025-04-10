@@ -16,7 +16,7 @@ export type InternalEvent =
         errorMsg: string;
     };
 
-export function isInternalEvent(value: any): value is InternalEvent {
+export function isInternalEvent(value: InternalEvent) {
     if (typeof value !== "object" || value === null) return false;
     return (
         value.type === INIT_DATA_READY_EVENT ||

@@ -9,6 +9,7 @@ export default defineConfig(({ command }) => {
 
   if (command === 'serve') {
     input.host = resolve(__dirname, 'host.html');
+    input['host-mobile'] = resolve(__dirname, 'host-mobile.html');
   }
 
   return {

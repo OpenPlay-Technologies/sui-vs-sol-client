@@ -27,7 +27,7 @@ window.addEventListener('message', (event: MessageEvent) => {
             else {
                 console.log("Received init data:", data);
                 
-                var backend;
+                let backend;
                 if (import .meta.env.VITE_DUMMY_BACKEND == 'true') {
                     console.log("Using dummy backend");
                     backend = new MockBackendService();
