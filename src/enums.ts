@@ -1,0 +1,7 @@
+export enum CoinFlipState {
+    INIT = "INIT",
+    IDLE = "IDLE",
+    WAITING_FOR_RESPONSE = "WAITING_FOR_RESPONSE",
+    FLIPPING_TO_RESULT = "FLIPPING_TO_RESULT",
+    ERROR = "ERROR",
+}

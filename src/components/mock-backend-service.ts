@@ -2,9 +2,7 @@ import { GameModel, InteractedWithGameModel } from "../sui/models/openplay-coin-
 import { BalanceManagerModel } from "../sui/models/openplay-core";
 import { IBackendService } from "./backend-service";
 import { HEAD, HOUSE_BIAS, TAIL } from "../sui/constants/coin-flip-constants";
-import { GlobalStorage } from "./global-storage";
-import { INTERACTED_EVENT } from "../constants";
-import { InternalEvent } from "./internal-event";
+import { store } from "../redux/store";
 
 const START_BALANCE = BigInt(100e9);
 
@@ -45,7 +43,35 @@ const gameData: GameModel = {
 
 export default class MockBackendService implements IBackendService {
 
-    public async handleInteract(stake: number, prediction: string): Promise<void> {
+    fetchGame(): Promise<GameModel | undefined> {
+        return Promise.resolve(gameData);
+    }
+
+    fetchBalanceManager(balanceManagerId: string): Promise<BalanceManagerModel | undefined> {
+        // Construct a mocked game object based on your GameModel interface
+        const mockBm: BalanceManagerModel = {
+            id: {
+                id: balanceManagerId
+            },
+            balance: START_BALANCE,
+            tx_allow_listed: {
+                fields: {
+                    contents: [""]
+                },
+                type: "VecSet"
+
+            },
+            cap_id: ""
+        };
+        return Promise.resolve(mockBm);
+        // return new Promise((resolve) => {
+        //     setTimeout(() => {
+        //         resolve(mockBm);
+        //     }, 2000); 
+        // });
+    }
+
+    public async handleInteract(_registryId: string, _gameId: string, _balanceManagerId: string, _houseId: string, _playCapId: string, stake: number, prediction: string): Promise<InteractedWithGameModel | undefined> {
 
         const randomNumber = Math.floor(Math.random() * 10000);
 
@@ -67,7 +93,7 @@ export default class MockBackendService implements IBackendService {
             }
         }
 
-        const currentBalance = GlobalStorage.instance.data?.balance;
+        const currentBalance = store.getState().game.balance;
         if (!currentBalance) {
             console.error("Missing global state data");
             return;
@@ -85,42 +111,7 @@ export default class MockBackendService implements IBackendService {
             },
             balance_manager_id: "",
         }
-
-        const msg: InternalEvent = {
-            type: INTERACTED_EVENT,
-            data: event,
-        }
-        window.postMessage(msg, '*');
+        return event;
     }
 
 }
-
-
-export const mockFetchGame = async (): Promise<GameModel> => {
-    return Promise.resolve(gameData);
-
-};
-
-export const mockFetchBalanceManager = async (): Promise<BalanceManagerModel> => {
-    // Construct a mocked game object based on your GameModel interface
-    const mockBm: BalanceManagerModel = {
-        id: {
-            id: "0x0"
-        },
-        balance: START_BALANCE,
-        tx_allow_listed: {
-            fields: {
-                contents: [""]
-            },
-            type: "VecSet"
-
-        },
-        cap_id: ""
-    };
-    return Promise.resolve(mockBm);
-    // return new Promise((resolve) => {
-    //     setTimeout(() => {
-    //         resolve(mockBm);
-    //     }, 2000); 
-    // });
-};

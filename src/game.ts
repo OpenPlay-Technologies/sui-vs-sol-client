@@ -1,11 +1,12 @@
-import { GlobalStorage } from "./components/global-storage";
+import { store } from "./redux/store";
 
 
 // HTML Canvas element to render to
 export const riveCanvas = document.getElementById("rive-canvas") as HTMLCanvasElement | null;
 
 function computeSize() {
-    GlobalStorage.instance.data?.riveInstance?.resizeDrawingSurfaceToCanvas();
+    const state = store.getState().rive;
+    state.riveInstance?.resizeDrawingSurfaceToCanvas();
 }
 
 // Subscribe to window size changes and update call `resizeDrawingSurfaceToCanvas`

@@ -1,9 +1,8 @@
-import BackendService from "../components/backend-service";
-import MockBackendService from "../components/mock-backend-service";
-import { INIT_DATA_READY_EVENT } from "../constants";
-import { CoinFlipState, GlobalStorage } from "../components/global-storage";
-import { InternalEvent } from "../components/internal-event";
+import { OPENPLAY_CONNECT_INITIALIZED_EVENT } from "../constants";
 import { INIT_REQUEST, INIT_RESPONSE, isMessage } from "./messages";
+import { InternalEvent, InternalEventEmitter } from "../events/internal-event-definitions";
+import { store } from "../redux/store";
+import { setOpenPlayData } from "../redux/slices/openplay-connect-slice";
 
 // Listen for the init message
 window.addEventListener('message', (event: MessageEvent) => {
@@ -14,7 +13,8 @@ window.addEventListener('message', (event: MessageEvent) => {
 
     switch (data.type) {
         case INIT_REQUEST:
-            if (GlobalStorage.instance.data !== null) {
+            // Check if the init data has already been received
+            if (store.getState().openPlayConnect.initialized) {
                 console.log("Init data already received");
                 const responseData = {
                     type: INIT_RESPONSE,
@@ -26,35 +26,23 @@ window.addEventListener('message', (event: MessageEvent) => {
             }
             else {
                 console.log("Received init data:", data);
-                
-                let backend;
-                if (import .meta.env.VITE_DUMMY_BACKEND == 'true') {
-                    console.log("Using dummy backend");
-                    backend = new MockBackendService();
-                }
-                else {
-                    console.log("Using real backend");
-                    backend = new BackendService();
-                }
 
-                GlobalStorage.instance.data = {
-                    state: CoinFlipState.IDLE,
+                // Set the OpenPlay data in the Redux store
+                store.dispatch(setOpenPlayData({
+                    initialized: true,
                     balanceManagerId: data.balanceManagerId,
                     houseId: data.houseId,
                     playCapId: data.playCapId,
                     referralId: data.referralId,
-                    gameData: null,
-                    balanceManagerData: null,
-                    backendService: backend,
-                    balance: 0,
-                    currentStakeIndex: 0,
-                    winAmount: 0,
-                    riveInstance: null,
-                };
+                }));
+
+                // Internal event to indicate that the game can start
                 const payload: InternalEvent = {
-                    type: INIT_DATA_READY_EVENT,
+                    type: OPENPLAY_CONNECT_INITIALIZED_EVENT,
                 }
-                window.postMessage(payload, '*');
+                InternalEventEmitter.emit(OPENPLAY_CONNECT_INITIALIZED_EVENT, payload);
+
+                // Send a response back to the parent window
                 const responseData = {
                     type: INIT_RESPONSE,
                     isSuccessful: true,

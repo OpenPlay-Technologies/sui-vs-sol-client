@@ -1,33 +1,30 @@
 import { Transaction } from "@mysten/sui/transactions";
 
 import { signAndExecuteTransaction } from "../openplay-connect/game-functions";
-import { InteractedWithGameModel } from "../sui/models/openplay-coin-flip";
-import { GlobalStorage } from "./global-storage";
+import { GameModel, InteractedWithGameModel } from "../sui/models/openplay-coin-flip";
 import { INTERACT_EVENT_TYPE, INTERACT_FUNCTION_TARGET } from "../sui/constants/coin-flip-constants";
-import { InternalEvent } from "./internal-event";
-import { ERROR_EVENT, INTERACTED_EVENT } from "../constants";
+import { fetchGame } from "../sui/queries/coin-flip";
+import { BalanceManagerModel } from "../sui/models/openplay-core";
+import { fetchBalanceManager } from "../sui/queries/balance-manager";
 
 export interface IBackendService {
-    handleInteract(stake: number, prediction: string): Promise<void>;
+    handleInteract(registryId: string, gameId: string, balanceManagerId: string, houseId: string, playCapId: string, stake: number, prediction: string): Promise<InteractedWithGameModel | undefined>;
+    fetchGame(gameId: string): Promise<GameModel | undefined>;
+    fetchBalanceManager(balanceManagerId: string): Promise<BalanceManagerModel | undefined>;
 }
 
 export default class BackendService implements IBackendService {
 
-    public async handleInteract(stake: number, prediction: string): Promise<void> {
+    public async fetchGame(gameId: string): Promise<GameModel | undefined> {
+        return await fetchGame(gameId);
+    }
 
-        const data = GlobalStorage.instance.data;
-        if (!data || !data.backendService || !data.gameData || !data.balanceManagerData) {
-            console.error("Missing global state data");
-            return;
-        }
+    public async fetchBalanceManager(balanceManagerId: string): Promise<BalanceManagerModel | undefined> {
+        return await fetchBalanceManager(balanceManagerId);
+    }
 
+    public async handleInteract(registryId: string, gameId: string, balanceManagerId: string, houseId: string, playCapId: string, stake: number, prediction: string): Promise<InteractedWithGameModel | undefined> {
         try {
-            const gameId = import.meta.env.VITE_GAME_ID;
-            const registryId = import.meta.env.VITE_REGISTRY_ID;
-            const balanceManagerId = data.balanceManagerData.id.id;
-            const houseId = data.houseId;
-            const playCapId = data.playCapId;
-
             const tx = new Transaction();
 
             tx.moveCall({
@@ -51,27 +48,13 @@ export default class BackendService implements IBackendService {
 
             if (interactEvent) {
                 const parsedEvent = parseInteractedWithGameModel(interactEvent.parsedJson) as InteractedWithGameModel;
-                const msg: InternalEvent = {
-                    type: INTERACTED_EVENT,
-                    data: parsedEvent,
-                }
-                window.postMessage(msg, '*');
+                return parsedEvent;
             }
-            else {
-                const msg: InternalEvent = {
-                    type: ERROR_EVENT,
-                    errorMsg: "No interact event found",
-                };
-                window.postMessage(msg, '*');
-            }
+            return undefined;
         }
         catch (error) {
             console.error(error);
-            const msg: InternalEvent = {
-                type: ERROR_EVENT,
-                errorMsg: error instanceof Error ? error.message : "An unknown error occurred",
-            };
-            window.postMessage(msg, '*');
+            throw error;
         }
     }
 }

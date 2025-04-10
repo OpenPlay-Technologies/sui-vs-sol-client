@@ -4,7 +4,6 @@ import { mistToSUI } from "../utils/helpers";
 
 
 export const updateUI = (riveInstance: rive.Rive, balanceValue: number, winValue: number, disableButton: boolean) => {
-    // console.log("Updating UI", balanceValue, winValue, disableButton);
     riveInstance?.setTextRunValue("Balance Value Run", mistToSUI(Number(balanceValue)));
     riveInstance?.setTextRunValue("Win Value Run", mistToSUI(Number(winValue)));
     const disableButtonInput = riveInstance?.stateMachineInputs("State Machine 1").find(x => x.name == "Disable button");
@@ -14,10 +13,6 @@ export const updateUI = (riveInstance: rive.Rive, balanceValue: number, winValue
 }
 
 export const updateStake = (riveInstance: rive.Rive, stakeIndex: number) => {
-    if (stakeIndex < 0 || stakeIndex >= stakes.length) {
-        console.error('Invalid stake index');
-        return;
-    }
     const stakeValue = stakes[stakeIndex];
     const canIncrease = stakeIndex < stakes.length - 1;
     const canDecrease = stakeIndex > 0;
@@ -51,7 +46,6 @@ export const startFlippingAnimation = (riveInstance: rive.Rive) => {
 }
 
 export const flipToResult = (riveInstance: rive.Rive, result: string) => {
-    // console.log("Flipping to result", result);
     if (result == "Head") {
         riveInstance?.setBooleanStateAtPath("End sui", true, "Coin flip v2");
     } else if (result == "Tail") {
