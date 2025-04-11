@@ -1,4 +1,4 @@
-export const stakes = [1e7, 2e7, 3e7, 4e7, 5e7, 6e7, 7e7, 8e7, 9e7, 10e7];
+export const stakes = [1e7, 5e7, 10e7, 20e7, 50e7, 1e9, 5e9, 10e9];
 
 // === Events ===
 export const FLIP_TO_RESULT_REQUESTED_EVENT = 'flip-to-result-requested-event';
