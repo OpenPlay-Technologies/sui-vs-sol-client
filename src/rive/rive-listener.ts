@@ -7,7 +7,7 @@ import { handleInteractThunk } from "../redux/thunks";
 import { updateGameData } from "../redux/slices/game-slice";
 import { getRiveInstanceOrThrow } from "../redux/slices/rive-slice";
 import { InternalEvent, InternalEventEmitter } from "../events/internal-event-definitions";
-import { requestCloseGame } from "../openplay-connect/game-functions";
+import { notifyBalanceUpdate, requestCloseGame } from "../openplay-connect/game-functions";
 
 // Listen for rive events
 export const onRiveEventReceived = (riveEvent: rive.Event) => {
@@ -67,6 +67,7 @@ export const onRiveEventReceived = (riveEvent: rive.Event) => {
         store.dispatch(updateGameData({
             state: CoinFlipState.IDLE
         }));
+        notifyBalanceUpdate();
     }
     // Close game
     if (eventData.name == "CloseButtonClicked") {

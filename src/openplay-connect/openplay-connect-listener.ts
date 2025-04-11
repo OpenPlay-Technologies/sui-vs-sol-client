@@ -1,5 +1,5 @@
-import { OPENPLAY_CONNECT_INITIALIZED_EVENT } from "../constants";
-import { INIT_REQUEST, INIT_RESPONSE, isMessage } from "./messages";
+import { OPENPLAY_CONNECT_INITIALIZED_EVENT, RELOAD_REQUESTED_EVENT } from "../constants";
+import { BALANCE_UPDATE_NOTIFICATION, INIT_REQUEST, INIT_RESPONSE, isMessage } from "./messages";
 import { InternalEvent, InternalEventEmitter } from "../events/internal-event-definitions";
 import { store } from "../redux/store";
 import { setOpenPlayData } from "../redux/slices/openplay-connect-slice";
@@ -51,6 +51,14 @@ window.addEventListener('message', (event: MessageEvent) => {
                 return;
             }
             break;
+        case BALANCE_UPDATE_NOTIFICATION:
+            {
+                const payload: InternalEvent = {
+                    type: RELOAD_REQUESTED_EVENT
+                };
+                InternalEventEmitter.emit(RELOAD_REQUESTED_EVENT, payload);
+                break;
+            }
         default:
             // This case should never happen due to our type guard.
             break;

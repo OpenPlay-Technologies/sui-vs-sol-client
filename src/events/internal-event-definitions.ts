@@ -1,6 +1,6 @@
 import mitt from "mitt";
 
-import { ERROR_EVENT, INIT_DATA_READY_EVENT, FLIP_TO_RESULT_REQUESTED_EVENT, OPENPLAY_CONNECT_INITIALIZED_EVENT } from "../constants";
+import { ERROR_EVENT, INIT_DATA_READY_EVENT, FLIP_TO_RESULT_REQUESTED_EVENT, OPENPLAY_CONNECT_INITIALIZED_EVENT, RELOAD_REQUESTED_EVENT } from "../constants";
 
 export type InternalEvent =
     |
@@ -18,6 +18,10 @@ export type InternalEvent =
     |
     {
         type: typeof OPENPLAY_CONNECT_INITIALIZED_EVENT
+    }
+    |
+    {
+        type: typeof RELOAD_REQUESTED_EVENT
     }
 
 export type InternalEventMap = {

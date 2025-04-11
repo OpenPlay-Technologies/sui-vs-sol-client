@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode testnet",
+    "dev": "vite",
+    "testnet": "vite --mode testnet",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint ./ --fix"

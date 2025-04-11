@@ -1,5 +1,6 @@
 import { getEnvKeypair } from "./utils/keypair";
 import {
+	BALANCE_UPDATE_NOTIFICATION,
 	CLOSE_GAME_REQUEST,
 	INIT_REQUEST,
 	INIT_RESPONSE,
@@ -42,6 +43,9 @@ window.addEventListener("message", (event: MessageEvent) => {
 			} else {
 				console.error("Init failed:", data.errorMsg);
 			}
+			break;
+		case BALANCE_UPDATE_NOTIFICATION:
+			console.log("Balance update notification:", data);
 			break;
 		case CLOSE_GAME_REQUEST:
 			window.alert("Game closed by iframe request.");

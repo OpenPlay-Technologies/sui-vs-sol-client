@@ -1,5 +1,5 @@
 import * as rive from "@rive-app/webgl";
-import { INIT_DATA_READY_EVENT, ERROR_EVENT, FLIP_TO_RESULT_REQUESTED_EVENT, OPENPLAY_CONNECT_INITIALIZED_EVENT } from "../constants";
+import { INIT_DATA_READY_EVENT, ERROR_EVENT, FLIP_TO_RESULT_REQUESTED_EVENT, OPENPLAY_CONNECT_INITIALIZED_EVENT, RELOAD_REQUESTED_EVENT } from "../constants";
 import { handleError } from "../utils/error-messages";
 import { riveCanvas } from "../game";
 import { updateUI, updateStake, flipToResult, showError } from "../rive/rive-helpers";
@@ -113,6 +113,19 @@ InternalEventEmitter.on(ERROR_EVENT, (payload) => {
     handleError(payload.errorMsg, (msg) => {
         showError(riveInstane, msg)
     });
+
+    store.dispatch(reloadGameThunk()).then(() => {
+        const state = store.getState().game;
+        const riveInstance = getRiveInstanceOrThrow(store.getState());
+        updateUI(riveInstance, state.balance, state.winAmount, false);
+    });;
+});
+
+/**
+ * On reload we refetch the data similar to the error
+ */
+InternalEventEmitter.on(RELOAD_REQUESTED_EVENT, () => {
+    console.log("Reload event received");
 
     store.dispatch(reloadGameThunk()).then(() => {
         const state = store.getState().game;
