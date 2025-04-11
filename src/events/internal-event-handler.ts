@@ -48,8 +48,16 @@ InternalEventEmitter.on(INIT_DATA_READY_EVENT, () => {
             alignment: rive.Alignment.Center, // Center the graphic
         });
 
+        let src: string;
+        if (window.window.innerWidth < 600) {
+            src = "/sui-vs-sol-mobile.riv"; // Path to the Rive file for mobile
+        }
+        else {
+            src = "/sui-vs-sol.riv"; // Path to the Rive file for desktop
+        }
+
         const riveInstance = new rive.Rive({
-            src: "/sui-vs-sol.riv", // Path to the Rive file
+            src: src, // Path to the Rive file
             // Be sure to specify the correct state machine (or animation) name
             stateMachines: "State Machine 1", // Name of the State Machine to play
             canvas: riveCanvas ?? (() => { throw new Error("Canvas element not found"); })(),
